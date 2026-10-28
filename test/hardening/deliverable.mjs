@@ -159,7 +159,9 @@ console.log("\n=== 3. SUBMIT-GUIDE 完整性 ===");
 			// `package.json` 里 `private: true` 表明不会发布，但读者光看 README
 			// 会误以为这是官方产物 —— 对投稿材料来说这是**定位不清**。
 			["README 明确声明「非官方项目」", /非官方项目|Unofficial project/, "避免被误认为官方产物"],
-			["声明解释了 @deepseek-ai 前缀的由来", /不代表官方背书|does not imply endorsement|Loader 按路径|resolves plugins by path/, "说明命名原因"],
+			// **缺陷 166**：声明必须说明包名归属（用作者本人命名空间、不占用官方 scope），
+	// 而不是继续解释早已废弃的 `@deepseek-ai/` 前缀（改名后原文未同步）。
+	["声明说明了包名归属（不占用官方 scope）", /不占用任何官方 scope|does not occupy any official scope|作者本人的命名空间|author's own namespace/, "说明包名归属"],
 		];
 		for (const [label, re, why] of CHECKS) {
 			const ok = re.test(sg);
