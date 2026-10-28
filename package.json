@@ -1,0 +1,49 @@
+{
+  "name": "@zhaozehao10/dsh-text-tool-call-recovery",
+  "description": "Recover text-format tool calls (and fail loudly on empty responses) for models like step-5-preview that emit tool-call XML inside reasoning content",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "profile": {
+      "bundles": []
+    }
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "cordis",
+    "plugin",
+    "llm",
+    "tool-call",
+    "function-calling",
+    "streaming",
+    "recovery",
+    "step-5-preview",
+    "stepfun"
+  ],
+  "engines": {
+    "node": ">=16.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZhaoZehao10/dsh-text-tool-call-recovery.git"
+  },
+  "homepage": "https://github.com/ZhaoZehao10/dsh-text-tool-call-recovery#readme",
+  "bugs": {
+    "url": "https://github.com/ZhaoZehao10/dsh-text-tool-call-recovery/issues"
+  },
+  "author": "Zehao Zhao"
+}

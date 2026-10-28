@@ -1,0 +1,39 @@
+# 依赖
+node_modules/
+
+# 临时工作区（安装脚本的旧版本会把备份写到这里）
+.tmp/
+tmp/
+*.tmp
+
+# 覆盖率/基准的瞬时产物
+.tmp-cov*/
+.tmp-coverage-run/
+.tmp-cov-branch/
+coverage/
+*.lcov
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# **缺陷 158**：lib/index.js 的改写锁（mutation-test 运行时短暂存在，不应提交）
+.tmp-lib-write.lock
+.tmp-lib-orig.js
+
+# 日志
+*.log
+npm-debug.log*
+
+# ⚠️ 本文件与 PASTE-READY 是**提交草稿**，不应出现在公开仓库
+# （保留在本地，仅用于你复制粘贴到 GitHub Discussion）
+PASTE-READY.zh.md
+SUBMIT-GUIDE.zh.md
+
+# 已被 Discussion 取代的旧草稿
+community/issue-deepseek-harness.zh.md
+community/issue-deepseek-harness.en.md

@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-10-23T04:55:06.527Z",
+  "libVersion": "0.2.0",
+  "libSha256": "f992fed60042a072",
+  "totals": {
+    "streamsScanned": 14733,
+    "skipped": 0,
+    "changedStreams": 5
+  },
+  "changed": [
+    {
+      "fp": "090c8a978195bca4",
+      "session": "session-",
+      "inCalls": 0,
+      "outCalls": 0,
+      "inFin": "stop",
+      "outFin": "error"
+    },
+    {
+      "fp": "2fb643082a2e6061",
+      "session": "session-",
+      "inCalls": 0,
+      "outCalls": 1,
+      "inFin": "stop",
+      "outFin": "tool-calls"
+    },
+    {
+      "fp": "66016187acc03ea7",
+      "session": "session-",
+      "inCalls": 0,
+      "outCalls": 0,
+      "inFin": "stop",
+      "outFin": "error"
+    },
+    {
+      "fp": "74bc0dedd8542c96",
+      "session": "session-",
+      "inCalls": 0,
+      "outCalls": 0,
+      "inFin": "stop",
+      "outFin": "error"
+    },
+    {
+      "fp": "d9df9b21ad9011eb",
+      "session": "session-",
+      "inCalls": 0,
+      "outCalls": 1,
+      "inFin": "stop",
+      "outFin": "tool-calls"
+    }
+  ]
+}
