@@ -24,6 +24,7 @@ import path from "node:path";
 import os from "node:os";
 import { execFileSync } from "node:child_process";
 
+import { sameContent } from "./_file-compare.mjs";
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const LIB = path.join(ROOT, "lib", "index.js");
 const HOME = os.homedir();
@@ -40,9 +41,12 @@ console.log("=== 1. 安装副本与源码一致 ===");
 	ck("安装副本存在", fs.existsSync(INST), INST);
 	if (fs.existsSync(INST)) {
 		const inst = fs.readFileSync(INST);
-		ck("安装副本与源码字节一致", src.equals(inst), `${src.length} vs ${inst.length}`);
+		// **缺陷 165**：忽略 CRLF/LF 差异
+	ck("安装副本与源码一致（忽略换行符）", sameContent(src, inst), `${src.length} vs ${inst.length}`);
 		console.log(`  源码 ${src.length} 字节 / 安装 ${inst.length} 字节`);
-		console.log(`  ${src.equals(inst) ? "✅ 一致" : "❌ 不一致"}`);
+		// **缺陷 165**：诊断行也必须用规范化比较 —— 否则 LF 环境会打印「❌ 不一致」，
+		// 而这一行会被 run-all 的「失败标记但 exit 0」守卫判为 SUSPECT（假矛盾）。
+		console.log(`  ${sameContent(src, inst) ? "✅ 内容一致（已忽略换行符）" : "❌ 内容不一致"}`);
 	}
 }
 

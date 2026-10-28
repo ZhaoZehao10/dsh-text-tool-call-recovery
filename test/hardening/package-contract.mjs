@@ -22,6 +22,7 @@ import path from "node:path";
 import os from "node:os";
 import { execFileSync } from "node:child_process";
 
+import { sameContent } from "./_file-compare.mjs";
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 
 // **缺陷 145**（第 139 轮）：这两份**草稿**被 `.gitignore` 排除（只留在本地，
@@ -190,7 +191,8 @@ console.log("\n=== 5. npm pack 内容 ===");
 			// 包内插件与源码字节一致
 			const a = fs.readFileSync(path.join(pkgRoot, "lib", "index.js"));
 			const b = fs.readFileSync(path.join(ROOT, "lib", "index.js"));
-			ck("包内 lib/index.js 与源码字节一致", a.equals(b), `${a.length} vs ${b.length}`);
+			// **缺陷 165**：忽略 CRLF/LF 差异
+	ck("包内 lib/index.js 与源码一致（忽略换行符）", sameContent(a, b), `${a.length} vs ${b.length}`);
 
 			console.log(`  包内文件: ${files.length} 个`);
 			console.log(`  ${files.join(", ")}`);

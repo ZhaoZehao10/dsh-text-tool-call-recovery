@@ -11,6 +11,7 @@ import path from "node:path";
 import os from "node:os";
 import { pathToFileURL } from "node:url";
 
+import { sameContent } from "./_file-compare.mjs";
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const SRC_LIB = path.join(ROOT, "lib", "index.js");
 const PROFILE = path.join(os.homedir(), ".dsh", "profiles", "desktop");
@@ -51,8 +52,9 @@ console.log("\n=== 2. 安装位置检查 ===");
 
 			const srcHash = fs.readFileSync(SRC_LIB);
 			const instHash = fs.readFileSync(instLib);
-			const same = Buffer.compare(srcHash, instHash) === 0;
-			ck("源码与安装副本一致", same, same ? "" : `源码 ${srcHash.length}B vs 安装 ${instHash.length}B`);
+			// **缺陷 165**：按规范化文本比较（跨平台 CRLF/LF 差异不应判为不一致）
+			const same = sameContent(srcHash, instHash);
+			ck("源码与安装副本一致", same, same ? "" : `源码 ${srcHash.length}B vs 安装 ${instHash.length}B（已忽略换行符差异）`);
 
 			const pkgJson = path.join(pkgDir, "package.json");
 			if (fs.existsSync(pkgJson)) {

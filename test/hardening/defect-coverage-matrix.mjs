@@ -215,6 +215,7 @@ const GUARDS = [
 	{ defect: 162, suite: "meta-health.mjs", marker: /重试|retry/ },
 	{ defect: 163, suite: "deliverable.mjs", marker: /合成样本|synthetic/ },
 	{ defect: 164, suite: "package-contract.mjs", marker: /zhaozehao10|scope/ },
+	{ defect: 165, suite: "deploy-verify.mjs", marker: /sameContent|normalizeEol/ },
 ];
 
 // 验证：每个缺陷恰好有一个守护

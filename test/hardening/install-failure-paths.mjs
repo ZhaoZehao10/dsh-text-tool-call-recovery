@@ -21,6 +21,7 @@ import path from "node:path";
 import os from "node:os";
 import { spawnSync } from "node:child_process";
 
+import { sameContent } from "./_file-compare.mjs";
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const SCRIPT = path.join(ROOT, "install-stepfix.ps1");
 
@@ -123,7 +124,8 @@ try {
 		if (fs.existsSync(path.join(dest, "lib", "index.js"))) {
 			const a = fs.readFileSync(path.join(ROOT, "lib", "index.js"));
 			const b = fs.readFileSync(path.join(dest, "lib", "index.js"));
-			ck("复制的插件与源码字节一致", a.equals(b), `${a.length} vs ${b.length}`);
+			// **缺陷 165**：忽略 CRLF/LF 差异
+	ck("复制的插件与源码一致（忽略换行符）", sameContent(a, b), `${a.length} vs ${b.length}`);
 		}
 
 		const patchPath = path.join(prof, "cordis.patch.yml");

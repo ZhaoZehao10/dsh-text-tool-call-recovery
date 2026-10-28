@@ -21,6 +21,7 @@ import path from "node:path";
 import os from "node:os";
 import zlib from "node:zlib";
 
+import { sameContent } from "./_file-compare.mjs";
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const LIB = path.join(ROOT, "lib", "index.js");
 const HOME = os.homedir();
@@ -39,7 +40,8 @@ console.log("=== 1. 源码与安装副本一致 ===");
 	if (fs.existsSync(INST)) {
 		const a = fs.readFileSync(LIB);
 		const b = fs.readFileSync(INST);
-		ck("安装副本存在且与源码一致", a.equals(b), `源码 ${a.length}B vs 安装 ${b.length}B`);
+		// **缺陷 165**：忽略 CRLF/LF 差异（跨平台克隆后字节数必然不同）
+		ck("安装副本存在且与源码一致", sameContent(a, b), `源码 ${a.length}B vs 安装 ${b.length}B（已忽略换行符差异）`);
 		console.log(`  源码: ${a.length} 字节`);
 		console.log(`  安装: ${b.length} 字节`);
 		console.log(`  一致: ${a.equals(b) ? "✅" : "❌"}`);
