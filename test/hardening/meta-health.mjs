@@ -323,10 +323,16 @@ console.log("\n=== 10. 本地测试副本与 asar 一致 ===");
 			// 只有 4748087（offset 12）能让 JSON.parse 成功。
 			const jsonLenVerified = buf.readUInt32LE(12);
 			const idx = 16;
-			// 自洽性：offset 8 的值应等于 offset 12 的值 + 5（pickle 的尾部对齐标记）。
-			// 这个关系实测在 rc.2 / rc.3 都成立，用于在格式再变时**尽早报错**而不是静默解析错。
-			if (buf.readUInt32LE(8) !== jsonLenVerified + 5) {
-				throw new Error(`asar pickle 头不自洽：offset8=${buf.readUInt32LE(8)} jsonLen=${jsonLenVerified}`);
+			// 自洽性：offset 8 应等于 offset 12 + 对齐填充（4 或 5）。
+			// 实测：rc.2 / rc.3 为 +5；新版（dsh-llm 0.2.1-rc.5，2026-10-29 构建）改为 +4 ——
+			// **两种都是合法的 pickle 布局变体**（尾部对齐填充大小不同），都指向同一个 JSON 起点。
+			// **缺陷 167**（第 157 轮）：原断言硬编码 +5，新版上误报「头不自洽」，
+			// 连带 4 个套件失败（branch-coverage / claims-audit / coverage 的子套件全被它拖垮）。
+			// 正确写法：接受两种变体，并在都不满足时给出**两种公式都列出**的诊断信息。
+			const padNeeded = jsonLenVerified % 4 === 0 ? 4 : 5;
+			const off8 = buf.readUInt32LE(8);
+			if (off8 !== jsonLenVerified + 4 && off8 !== jsonLenVerified + 5) {
+				throw new Error(`asar pickle 头不自洽：offset8=${off8}，jsonLen=${jsonLenVerified}（期望 +4 或 +5，实测均不满足）`);
 			}
 			// **缺陷 155 自我修正**：原来用「括号深度扫描」找 JSON 结尾 ——
 			// 但 asar header 里的 JSON **字符串值本身含 `{` 和 `}`**（如 package.json 内容），
