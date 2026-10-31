@@ -383,7 +383,7 @@ variable `DSH_TEXT_TOOL_CALL_RECOVERY` inside `apply()` and, when it equals the
 - Tied to DSH 0.2.0-rc.2's `llm/stream` seam and StreamChunk protocol
   (verified to load and pass on 0.2.1-rc.1, 0.2.1-rc.2 and **0.2.1-rc.3** as well).
 
-## Cross-version verification (0.2.0-rc.2 → 0.2.1-rc.1 → 0.2.1-rc.2 → 0.2.1-rc.3)
+## Cross-version verification (0.2.0-rc.2 → 0.2.1-rc.1 → 0.2.1-rc.2 → 0.2.1-rc.3 → 0.2.1-rc.5)
 
 > **How to tell which version you are running**: check the "File version"
 > property of `DeepSeek Harness.exe` (measured as `0.2.1-rc.3` at the time
@@ -392,20 +392,27 @@ variable `DSH_TEXT_TOOL_CALL_RECOVERY` inside `apply()` and, when it equals the
 > **installer version** (measured as `44.7.0`), which differs from the app
 > version — do not use it to identify versions.
 >
-> The four tested versions: `0.2.0-rc.2`, `0.2.1-rc.1` (installer version
+> The five tested versions: `0.2.0-rc.2`, `0.2.1-rc.1` (installer version
 > read `44.7.0` at the time), `0.2.1-rc.2`, and `0.2.1-rc.3`.
 
 A line-by-line check of the critical upstream spots shows
 **all unchanged**:
 
-| Check | 0.2.0-rc.2 | 0.2.1-rc.1 | 0.2.1-rc.2 | **0.2.1-rc.3** | Verdict |
-|---|---|---|---|---|---|
-| `@earendil-works/pi-ai` version | 0.87.1 | 1.1.0 | 1.1.0 | 1.1.0 | unchanged |
-| `dsh-llm` version | 0.2.0-rc.2 | 0.2.1-rc.1 | 0.2.1-rc.2 | **0.2.1-rc.3** | patch bump |
-| Parser recognizes text tool calls | only `delta.tool_calls` | still only (`:426-427`) | still only (`:425-426`) | **still only** | not fixed |
-| Agent-loop silent completion | `:1152-1153` | `:1164-1165` | `:1163-1164`, identical | **semantics unchanged** | not fixed |
-| Adapter `EMPTY_RESPONSE` trigger | only `content.length === 0` | still only (`:1481-1489`) | still only (`:1480-1488`) | **still only** | not fixed |
-| `@deepseek-ai/dsh-llm` 的 `types/invariant.js` | present (4401 bytes) | present | present | **removed** (rc.3 dropped the companion) | internal refactor |
+| Check | 0.2.0-rc.2 | 0.2.1-rc.1 | 0.2.1-rc.2 | 0.2.1-rc.3 | **0.2.1-rc.5** | Verdict |
+|---|---|---|---|---|---|---|
+| `@earendil-works/pi-ai` version | 0.87.1 | 1.1.0 | 1.1.0 | 1.1.0 | unchanged | unchanged |
+| `dsh-llm` version | 0.2.0-rc.2 | 0.2.1-rc.1 | 0.2.1-rc.2 | 0.2.1-rc.3 | **0.2.1-rc.5** | patch bump |
+| Parser recognizes text tool calls | only `delta.tool_calls` | still only (`:426-427`) | still only (`:425-426`) | **still only** | not fixed | **still text-only** (semantics identical) |
+| Agent-loop silent completion | `:1152-1153` | `:1164-1165` | `:1163-1164`, identical | **semantics unchanged** | not fixed | **semantics unchanged** |
+| Adapter `EMPTY_RESPONSE` trigger | only `content.length === 0` | still only (`:1481-1489`) | still only (`:1480-1488`) | **still only** | not fixed | **still the only trigger** (identical) |
+| `@deepseek-ai/dsh-llm` 的 `types/invariant.js` | present (4401 bytes) | present | present | **removed** (rc.3 dropped the companion) | internal refactor | **removed** (since rc.3, same in rc.5) |
+
+> **0.2.1-rc.5 (built 2026-10-29, tested 2026-10-31)**: `dsh-llm/lib/index.js` is byte-identical to rc.3
+> (105,272 bytes) and all 13 `lib/types` files are semantically identical — protocol and assembler
+> behaviour unchanged, bug still present. The package-layout overhaul (`dsh-llm` moved under
+> `dsh/node_modules/`, split into `dsh-llm-deepseek`/`dsh-llm-pi-ai` etc.) does not affect this plugin
+> (it hooks the profile-level `llm/stream` seam). Full run: **110 passed / 0 failed / 0 skipped**.
+> This upgrade also surfaced defect 167 (pickle assertion hard-coded +5; new build uses +4), now fixed.
 
 The issue therefore reproduces across **four versions and two pi-ai
 major versions** — not a regression, and not yet fixed upstream.
