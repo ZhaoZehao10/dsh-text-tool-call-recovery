@@ -20,12 +20,17 @@
 [Bug 报告] 工具调用被模型写成 XML 文本时回合被静默丢弃——step-5-preview 与网关路由两个真实案例，附插件级修复（三版本复现）
 
 ### 正文
+> **2026-11-11 更新**：官方发布 dsh-llm 0.2.2-rc.1（DSH 主程序 0.2.2.0，2026-11-04 构建）。
+> 这是 `lib/index.js` **首次出现实质变化**（105,272 → 105,456 字节），但逐行 diff 显示 **3 处差异全部是 `model.badge` 字段**
+> （模型徽章展示），与工具调用解析/装配器完全无关；`assembler.js`、`assistant-stream.js` 等 12 个 `lib/types` 文件语义一致。
+> **上游未修，bug 仍在**；插件零改动，新版完整回归 **110 通过 / 0 失败 / 0 跳过**。
+
 > **2026-10-31 更新**：官方发布 dsh-llm 0.2.1-rc.5。实测确认 `lib/index.js` 与 rc.3 逐字节相同（105,272 字节）、
 > `lib/types` 13 个文件语义一致——**上游未修，bug 仍在**；本插件在新版宿主加载正常，完整模式 110 通过 / 0 失败 / 0 跳过。
 > 本次升级同时暴露了插件测试基建的一个缺陷（asar pickle 断言硬编码，缺陷 167），已修复。
 
 > 建议分类：General（agent 可靠性）
-> 环境：DeepSeek Harness 0.2.0-rc.2 / 0.2.1-rc.1 / 0.2.1-rc.2 / 0.2.1-rc.3 / 0.2.1-rc.5（五版本均实测，win32 x64）
+> 环境：DeepSeek Harness 0.2.0-rc.2 / 0.2.1-rc.1 / 0.2.1-rc.2 / 0.2.1-rc.3 / 0.2.1-rc.5 / 0.2.2-rc.1（六版本均实测，win32 x64）
 > 严重级别：major（静默失败：无错误、无重试、无诊断，agent 类应用直接表现为"卡死/任务截断"）
 
 **现象**：两类真实场景下，agent 会出现"思考一会儿然后什么都不发生"/"任务被截断"——
@@ -228,7 +233,7 @@ STEPFUN_API_KEY=sk-xxx node model-side.cjs 20   # 连打 20 次并分类统计
 ### Body
 
 > Suggested category: General (agent reliability)
-> Environment: DeepSeek Harness 0.2.0-rc.2 / 0.2.1-rc.1 / 0.2.1-rc.2 / 0.2.1-rc.3 / 0.2.1-rc.5 (all five tested, win32 x64)
+> Environment: DeepSeek Harness 0.2.0-rc.2 / 0.2.1-rc.1 / 0.2.1-rc.2 / 0.2.1-rc.3 / 0.2.1-rc.5 / 0.2.2-rc.1 (all six tested, win32 x64)
 > Severity: major (silent failure — no error, no retry, no diagnostics; agent apps see a "hang" or "truncated task")
 
 **Symptom**: in two production scenarios the agent "thinks for a while and
